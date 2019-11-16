@@ -2,14 +2,14 @@ package kz.one.lab.project.Controller;
 
 import io.swagger.annotations.ApiOperation;
 import kz.one.lab.project.Entity.Person;
+import kz.one.lab.project.Entity.Phone;
 import kz.one.lab.project.PersonRepository.PersonRepository;
+import kz.one.lab.project.PersonRepository.PhoneRepository;
 import kz.one.lab.project.RandomGenerator.RandomGeneratorImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import javax.print.attribute.standard.Media;
 import java.util.List;
 
 @RestController
@@ -23,10 +23,13 @@ public class PersonController {
     @Autowired
     RandomGeneratorImpl randomGenerator;
 
+    @Autowired
+    PhoneRepository phoneRepository;
+
     @ApiOperation("save Persons")
     @RequestMapping(value = "/persons/",produces = MediaType.APPLICATION_JSON_VALUE,method = RequestMethod.POST)
     public Person save(@RequestParam String name,@RequestParam int age){
-        Person person = new Person(null,name,age);
+        Person person = new Person(name,age);
         personRepository.save(person);
         log.info("добавлен пользователь " + person + " в бд");
         return person;
@@ -36,8 +39,6 @@ public class PersonController {
     @GetMapping(value = "/getPersonByName/",produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Person> getPersonByName(@RequestParam String name){
         List<Person> persons = personRepository.findAllByName(name);
-        for(Person person : persons)
-            log.info(person.getName() + " " + person.getAge());
         return persons;
     }
 
@@ -45,8 +46,6 @@ public class PersonController {
     @GetMapping(value = "/getPersonByAgeBetween/",produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Person> getPersonByAge(@RequestParam int start ,@RequestParam int end){
         List<Person> persons = personRepository.findAllByAgeBetween(start,end);
-        for(Person person : persons)
-            log.info(person.getName() + " " + person.getAge());
         return persons;
     }
 
@@ -54,18 +53,30 @@ public class PersonController {
     @GetMapping(value = "/getPersonByNameAndAge/" ,produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Person> getPersonByNameAndAge(@RequestParam int age,@RequestParam String name){
         List<Person> persons = personRepository.findAllByNameAndAge(name,age);
-        for(Person person : persons)
-            log.info(person.getName() + " " + person.getAge());
         return persons;
     }
 
-    @ApiOperation("Generate persons")
+    @ApiOperation("Generate persons and numbers of Phone")
     @PutMapping(value = "/generateUsers/" , produces = MediaType.APPLICATION_JSON_VALUE)
     public void generateUsers(){
-        List<Object> names = randomGenerator.generateValue(100,"NAME");
-        List<Object> ages = randomGenerator.generateValue(100,"AGE");
+        long start = System.currentTimeMillis();
+        List<Person> persons = randomGenerator.generateUser(100);
+        List<Integer> numbers = randomGenerator.generateNumber(100);
         for(int i=0;i<100;i++){
-            personRepository.save(new Person(null,(char)names.get(i) + "",(int)ages.get(i)));
+            personRepository.save(persons.get(i));
+            phoneRepository.save(new Phone(numbers.get(i)));
         }
+        long end = System.currentTimeMillis();
+        log.info("Time wasted for execution in ms " + (end-start));
+    }
+
+    @ApiOperation("EndPoint ,get Time for Execution")
+    @GetMapping(value = "/getTime/" , produces = MediaType.APPLICATION_JSON_VALUE)
+    public long getTime(){
+        long start = System.currentTimeMillis();
+        List<Person> persons = personRepository.findAll();
+        List<Phone> phone = phoneRepository.findAll();
+        long end = System.currentTimeMillis();
+        return (end-start);
     }
 }

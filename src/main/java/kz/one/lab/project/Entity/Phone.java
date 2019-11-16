@@ -5,26 +5,24 @@ import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
-import java.util.List;
 
-@Component
+@Entity
 @Getter
 @Setter
-@Entity
-public class Person {
+@Component
+public class Phone {
     @Id
     @GeneratedValue
     private Long id;
-    private String name;
-    private int age;
-    private Person(){}
-    public Person(String name,int age){
-        this.name = name;
-        this.age = age;
+    private Integer number;
+
+    public Phone(){}
+    public Phone(Integer number){
+        this.number = number;
     }
 
     public String toString(){
-        return this.name + " " + this.age;
+        return id + " " + number;
     }
 
 }

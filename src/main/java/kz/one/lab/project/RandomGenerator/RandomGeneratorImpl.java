@@ -1,5 +1,6 @@
 package kz.one.lab.project.RandomGenerator;
 
+import kz.one.lab.project.Entity.Person;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -15,23 +16,39 @@ import java.util.Random;
 public class RandomGeneratorImpl implements RandomGenerator {
 
     @Override
-    public List<Object> generateValue(int size, String valueType)  {
-        List<Object> values = new LinkedList<>();
-
-        for(int i =0; i<size;i++){
-            Random rnd = new Random();
-            rnd.setSeed(124292*i+System.currentTimeMillis());
-           if(valueType.equals("NAME"))
-              values.add((char)rnd.nextInt(48));
-           else if(valueType.equals("AGE"))
-               values.add(rnd.nextInt(256));
-           else {
-               log.error("No such value type in generateValue method");
-               throw new RuntimeException();
-           }
-
+    public List<Person> generateUser(int size) {
+        List<Person> persons = new LinkedList<>();
+        for(int i=0;i<size;i++){
+            persons.add(new Person(generateName(),generateAge()));
         }
-        return values;
+        return persons;
     }
+
+    @Override
+    public List<Integer> generateNumber(int size){
+        List<Integer> numbers = new LinkedList<>();
+        for(int i=0;i<size;i++){
+            Random random = new Random();
+            numbers.add(random.nextInt(4)+1);
+        }
+        return numbers;
+    }
+
+    private String generateName()  {
+        Random rnd = new Random();
+        String name = "";
+        for(int j=0;j<10;j++) {
+            char symbol = (char)(rnd.nextInt(26) + 65);
+            name += symbol + "";
+        }
+        return name;
+    }
+
+    private Integer generateAge() {
+        Random random = new Random();
+        int age = random.nextInt(100) + 1;
+        return age;
+    }
+
 }
 

@@ -10,5 +10,5 @@ public interface PersonRepository extends JpaRepository<Person,Long> {
     List<Person> findAll();
     List<Person> findAllByName(String name);
     List<Person> findAllByNameAndAge(@Param("name") String name,@Param("age") int age);
-    List<Person>findAllByAgeBetween(int start,int end);
+    List<Person> findAllByAgeBetween(int start,int end);
 }
