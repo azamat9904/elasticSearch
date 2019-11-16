@@ -1,16 +1,15 @@
 package kz.one.lab.project.Entity;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.stereotype.Component;
-
 import javax.persistence.*;
-import java.util.List;
 
 @Component
 @Getter
 @Setter
 @Entity
+@Document(indexName = "my_index", type = "user")
 public class Person {
     @Id
     @GeneratedValue

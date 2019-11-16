@@ -1,1 +1,1 @@
-INSERT INTO person VALUES (1000,17,'Namiyaly'),(1001,37,'Erzhan'),(1002,98,'Zhanibekov');
+INSERT INTO person VALUES (1003,17,'Namiyaly'),(1004,37,'Erzhan'),(1005,98,'Zhanibekov');
