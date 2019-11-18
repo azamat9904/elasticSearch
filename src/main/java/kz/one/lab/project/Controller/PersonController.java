@@ -8,6 +8,7 @@ import kz.one.lab.project.PersonRepository.PhoneRepository;
 import kz.one.lab.project.RandomGenerator.RandomGeneratorImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("onelab")
 @Slf4j
+@Qualifier("personRestController")
 public class PersonController {
 
     @Autowired
@@ -27,7 +29,7 @@ public class PersonController {
     PhoneRepository phoneRepository;
 
     @ApiOperation("save Persons")
-    @RequestMapping(value = "/persons/",produces = MediaType.APPLICATION_JSON_VALUE,method = RequestMethod.POST)
+    @RequestMapping(value = "/persons/",method = RequestMethod.POST)
     public Person save(@RequestParam String name,@RequestParam int age){
         Person person = new Person(name,age);
         personRepository.save(person);
@@ -57,7 +59,7 @@ public class PersonController {
     }
 
     @ApiOperation("Generate persons and numbers of Phone")
-    @PutMapping(value = "/generateUsers/" , produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/generateUsers/")
     public void generateUsers(){
         long start = System.currentTimeMillis();
         List<Person> persons = randomGenerator.generateUser(100);
